@@ -17,24 +17,27 @@ NOT_PLAYED = 0
 BOARD_ROW = 3
 BOARD_COL = 3
 board = np.zeros((BOARD_ROW, BOARD_COL))
-BOARD_WINNING = [[0,1,2], [3,4,5], [6,7,8],\
-                 [0,3,6], [1,4,7], [2,5,8],\
-                 [0,4,8], [2,4,6]]
+BOARD_WINNING = [[0, 1, 2], [3, 4, 5], [6, 7, 8], \
+                 [0, 3, 6], [1, 4, 7], [2, 5, 8], \
+                 [0, 4, 8], [2, 4, 6]]
 
 
 def logger(func):
     def wrapper(*args):
-        if(args[3]):
+        if args[3]:
             print_board(args[0])
         return func(*args)
     return wrapper
 
+
 def is_moves_remain(board):
     for row in board:
         for col in row:
-            if col==NOT_PLAYED:
-                return True 
+            if col == NOT_PLAYED:
+                return True
+
     return False
+
 
 def evaluation(board):
     for item in BOARD_WINNING:
@@ -46,31 +49,32 @@ def evaluation(board):
                 ai = False
             if who_played != HUMAN:
                 human = False
-                
+
         if human:
             return SCORE_LOOSE
         if ai:
             return SCORE_WIN
-            
+
     return SCORE_DRAW
 
+
 @logger
-def minimax(board, depth, isMax, verbose=False):    
+def minimax(board, depth, isMax, verbose=False):
     score = evaluation(board)
-    
+
     if score == SCORE_LOOSE:
         return score + depth
-    elif score == SCORE_WIN:
+    if score == SCORE_WIN:
         return score - depth
-    elif score == SCORE_DRAW:
+    if score == SCORE_DRAW:
         if not is_moves_remain(board):
             return SCORE_DRAW
-        
+
     if isMax:
-        best = SCORE_MIN      
+        best = SCORE_MIN
         for row in range(BOARD_ROW):
             for col in range(BOARD_COL):
-                if(board[row, col] == NOT_PLAYED):
+                if board[row, col] == NOT_PLAYED:
                     board[row, col] = AI
                     score = minimax(board, depth+1, False, verbose)
                     best = np.max((score, best))
@@ -80,12 +84,13 @@ def minimax(board, depth, isMax, verbose=False):
         best = SCORE_MAX
         for row in range(BOARD_ROW):
             for col in range(BOARD_COL):
-                if(board[row, col] == NOT_PLAYED):
+                if board[row, col] == NOT_PLAYED:
                     board[row, col] = HUMAN
                     score = minimax(board, depth+1, True, verbose)
                     best = np.min((score, best))
                     board[row, col] = NOT_PLAYED
-        return best        
+        return best
+
 
 def print_board(board):
     print('_' * 14)
@@ -98,49 +103,38 @@ def print_board(board):
     print('  Score:', evaluation(board))
     print()
 
+
 def find_best_move(board, verbose):
     best_row, best_col, best_score = -1, -1, SCORE_MIN
     best_list = []
     for row in range(BOARD_ROW):
         for col in range(BOARD_COL):
-            if(board[row, col] == NOT_PLAYED):
+            if board[row, col] == NOT_PLAYED:
                 board[row, col] = AI
-                move_score = minimax(board, 0, False, verbose);
+                move_score = minimax(board, 0, False, verbose)
                 board[row, col] = NOT_PLAYED
-                if (move_score > best_score):
-                    best_row = row;
-                    best_col = col;
-                    best_score = move_score;
+                if move_score > best_score:
+                    best_row = row
+                    best_col = col
+                    best_score = move_score
                     best_list.clear()
-                if (move_score == best_score):
-                    best_row = row;
-                    best_col = col;
-                    best_score = move_score;
+                if move_score == best_score:
+                    best_row = row
+                    best_col = col
+                    best_score = move_score
                     best_list.append((best_row, best_col, best_score))
-                    
+
     print('Best moves list: ', best_list)
-    print(f':: Find Best Move  ---  row:{best_row}, \t col:{best_col}, \t Score:{best_score}')
+    print(f':: Find Best Move  ---  row:{best_row}, \t col:{best_col}, \
+          \t Score:{best_score}')
     return (best_row, best_col)
 
 
-if __name__=='__main__':
-    board = np.array(([[0],[0],[2]],\
-                      [[0],[0],[0]],\
-                      [[1],[0],[0]]))
-    
+if __name__ == '__main__':
+    board = np.array(([[0], [0], [2]], \
+                      [[0], [0], [0]], \
+                      [[1], [0], [0]]))
+
     best_row, best_col = find_best_move(board, verbose=False)
     board[best_row, best_col] = AI
     print_board(board)
-        
-
-
-
-
-
-
-
-
-
-
-
-
