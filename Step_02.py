@@ -60,7 +60,7 @@ def minimax(board, isMax, depth):
     if score == SCORE_LOOSE:
         return SCORE_LOOSE + depth
     if score == SCORE_DRAW:
-        if not is_moves_remain:
+        if not is_moves_remain(board):
             return SCORE_DRAW
 
     if isMax:
@@ -91,7 +91,7 @@ def find_best_move(board):
         for col in range(BOARD_COL):
             if board[row, col] == NOT_PLAYED:
                 board[row, col] = AI
-                move_score = minimax(board, False, 0)
+                move_score = minimax(board, isMax=False, depth=0)
                 print(row, col, move_score)
                 board[row, col] = NOT_PLAYED
                 if move_score > best_score:
@@ -102,9 +102,9 @@ def find_best_move(board):
 
 
 if __name__ == '__main__':
-    board = np.array(([[1], [1], [2]],
-                      [[2], [2], [0]],
-                      [[1], [0], [0]]))
+    board = np.array(([[0], [1], [0]],
+                      [[0], [2], [1]],
+                      [[0], [2], [0]]))
     # print_board(board)
     best_row, best_col, best_score = find_best_move(board)
     print(f'best_row: {best_row}\nbest_col: {best_col}\nbest_score: {best_score}')

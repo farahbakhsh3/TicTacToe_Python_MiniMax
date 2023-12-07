@@ -131,8 +131,8 @@ def find_best_move(board, verbose):
 
 
 if __name__ == '__main__':
-    board = np.array(([[0], [0], [2]], \
-                      [[0], [0], [0]], \
+    board = np.array(([[1], [1], [2]],
+                      [[2], [2], [0]],
                       [[1], [0], [0]]))
 
     best_row, best_col = find_best_move(board, verbose=False)
