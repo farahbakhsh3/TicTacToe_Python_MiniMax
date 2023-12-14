@@ -52,7 +52,7 @@ def print_board(board):
     print('Score:', evaluate(board))
 
 
-def minimax(board, isMax, depth):
+def minimax(board, isMax, depth, alpha, beta):
     score = evaluate(board)
 
     if score == SCORE_WIN:
@@ -69,9 +69,13 @@ def minimax(board, isMax, depth):
             for col in range(BOARD_COL):
                 if board[row, col] == NOT_PLAYED:
                     board[row, col] = AI
-                    score = minimax(board, isMax=False, depth=depth+1)
+                    score = minimax(board, isMax=False, depth=depth+1, 
+                                    alpha=alpha, beta=beta)
                     best = np.max((score, best))
+                    alpha = np.max((alpha, best))
                     board[row, col] = NOT_PLAYED
+                    if beta <= alpha:
+                        break
         return best
     else:
         best = SCORE_MAX
@@ -79,9 +83,13 @@ def minimax(board, isMax, depth):
             for col in range(BOARD_COL):
                 if board[row, col] == NOT_PLAYED:
                     board[row, col] = HUMAN
-                    score = minimax(board, isMax=True, depth=depth+1)
+                    score = minimax(board, isMax=True, depth=depth+1,
+                                    alpha=alpha, beta=beta)
                     best = np.min((score, best))
+                    beta = np.min((beta, best))
                     board[row, col] = NOT_PLAYED
+                    if alpha >= beta:
+                        break
         return best
 
 
@@ -91,7 +99,8 @@ def find_best_move(board):
         for col in range(BOARD_COL):
             if board[row, col] == NOT_PLAYED:
                 board[row, col] = AI
-                move_score = minimax(board, isMax=False, depth=0)
+                move_score = minimax(board, isMax=False, depth=0,
+                                     alpha=SCORE_MIN, beta=SCORE_MAX)
                 print(row, col, move_score)
                 board[row, col] = NOT_PLAYED
                 if move_score > best_score:
