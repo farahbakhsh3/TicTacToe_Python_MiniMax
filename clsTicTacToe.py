@@ -16,12 +16,12 @@ class TicTacToe:
     BOARD_ROW = 3
     BOARD_COL = 3
     BOARD_WINNING = [[0, 1, 2], [3, 4, 5], [6, 7, 8],
-                    [0, 3, 6], [1, 4, 7], [2, 5, 8],
-                    [0, 4, 8], [2, 4, 6]]
+                     [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                     [0, 4, 8], [2, 4, 6]]
 
     def __init__(self, board):
         self.board = board
-        
+
     def is_moves_remain(self):
         for row in self.board:
             for col in row:
@@ -29,12 +29,14 @@ class TicTacToe:
                     return True
         return False
 
-
     def evaluate(self):
         for item in self.BOARD_WINNING:
-            b1 = self.board[item[0] // self.BOARD_ROW, item[0] % self.BOARD_ROW]
-            b2 = self.board[item[1] // self.BOARD_ROW, item[1] % self.BOARD_ROW]
-            b3 = self.board[item[2] // self.BOARD_ROW, item[2] % self.BOARD_ROW]
+            b1 = self.board[item[0] // self.BOARD_ROW,
+                            item[0] % self.BOARD_ROW]
+            b2 = self.board[item[1] // self.BOARD_ROW,
+                            item[1] % self.BOARD_ROW]
+            b3 = self.board[item[2] // self.BOARD_ROW,
+                            item[2] % self.BOARD_ROW]
             if b1 == self.AI and b2 == self.AI and b3 == self.AI:
                 return self.SCORE_WIN
             if b1 == self.HUMAN and b2 == self.HUMAN and b3 == self.HUMAN:
@@ -42,15 +44,13 @@ class TicTacToe:
 
         return self.SCORE_DRAW
 
-
     def print_board(self):
+        print("|-----------|")
         for row in range(self.BOARD_ROW):
+            print("| ", end="")
             for col in range(self.BOARD_COL):
-                print(self.board[row, col], '\t', end='')
-            print()
-
-        print('Score:', self.evaluate())
-
+                print(self.board[row, col][0], end=" | ")
+            print("\n|-----------|")
 
     def minimax(self, isMax, depth, alpha, beta):
         score = self.evaluate()
@@ -69,8 +69,8 @@ class TicTacToe:
                 for col in range(self.BOARD_COL):
                     if self.board[row, col] == self.NOT_PLAYED:
                         self.board[row, col] = self.AI
-                        score = self.minimax(isMax=False, depth=depth+1, 
-                                        alpha=alpha, beta=beta)
+                        score = self.minimax(isMax=False, depth=depth+1,
+                                             alpha=alpha, beta=beta)
                         best = np.max((score, best))
                         alpha = np.max((alpha, best))
                         self.board[row, col] = self.NOT_PLAYED
@@ -84,14 +84,13 @@ class TicTacToe:
                     if self.board[row, col] == self.NOT_PLAYED:
                         self.board[row, col] = self.HUMAN
                         score = self.minimax(isMax=True, depth=depth+1,
-                                        alpha=alpha, beta=beta)
+                                             alpha=alpha, beta=beta)
                         best = np.min((score, best))
                         beta = np.min((beta, best))
                         self.board[row, col] = self.NOT_PLAYED
                         if alpha >= beta:
                             break
             return best
-
 
     def find_best_move(self):
         best_row, best_col, best_score = -1, -1, self.SCORE_MIN
@@ -100,8 +99,8 @@ class TicTacToe:
                 if self.board[row, col] == self.NOT_PLAYED:
                     self.board[row, col] = self.AI
                     move_score = self.minimax(isMax=False, depth=0,
-                                        alpha=self.SCORE_MIN, beta=self.SCORE_MAX)
-                    print(row, col, move_score)
+                                              alpha=self.SCORE_MIN,
+                                              beta=self.SCORE_MAX)
                     self.board[row, col] = self.NOT_PLAYED
                     if move_score > best_score:
                         best_row = row
@@ -110,5 +109,14 @@ class TicTacToe:
         return best_row, best_col, best_score
 
 
-if __name__ == '__main__':
-    print("class TicTacToe cant run.")
+if __name__ == "__main__":
+    print("class TicTacToe...")
+    board = np.array(([[0], [0], [0]],
+                      [[0], [0], [2]],
+                      [[0], [0], [0]]))
+    game = TicTacToe(board=board)
+    game.print_board()
+    best_row, best_col, best_score = game.find_best_move()
+    print(f"best_row: {best_row}\n" +
+          f"best_col: {best_col}\n" +
+          f"best_score: {best_score}")
