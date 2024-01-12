@@ -1,13 +1,12 @@
 import numpy as np
-import pygame as pg
+import pygame
 import sys
 import time
-from pygame.locals import *
+from pygame import locals
 from clsTicTacToe import TicTacToe
 
 
 class Game:
-
     AI = TicTacToe.AI
     AI_TEXT = "AI"
     Human = TicTacToe.HUMAN
@@ -25,37 +24,56 @@ class Game:
     fps = 30
 
     def __init__(self):
-        pg.init()
+        pygame.init()
 
-        self.board = np.zeros((3, 3)).astype('int')
-        self.CLOCK = pg.time.Clock()
-        self.screen = pg.display.set_mode((self.width, self.height + 100),
-                                          0, 32)
-        pg.display.set_caption("My Tic Tac Toe")
-        self.coverImage = pg.image.load("Cover.png")
-        self.humanImage = pg.image.load("X.png")
-        self.AiImage = pg.image.load("O.png")
-        self.coverImage = pg.transform.scale(
-            self.coverImage,
-            (self.width, self.height + 100))
-        self.humanImage = pg.transform.scale(self.humanImage, (80, 80))
-        self.AiImage = pg.transform.scale(self.AiImage, (80, 80))
+        self.board = np.zeros((3, 3)).astype("int")
+        self.CLOCK = pygame.time.Clock()
+        self.screen = pygame.display.set_mode((self.width, self.height + 100), 0, 32)
+        pygame.display.set_caption("My Tic Tac Toe")
+        self.coverImage = pygame.image.load("Cover.png")
+        self.humanImage = pygame.image.load("X.png")
+        self.AiImage = pygame.image.load("O.png")
+        self.coverImage = pygame.transform.scale(
+            self.coverImage, (self.width, self.height + 100)
+        )
+        self.humanImage = pygame.transform.scale(self.humanImage, (80, 80))
+        self.AiImage = pygame.transform.scale(self.AiImage, (80, 80))
         self.gameInitiatingWindow()
         self.drawStatus()
 
     def gameInitiatingWindow(self):
         self.screen.blit(self.coverImage, (0, 0))
-        pg.display.update()
+        pygame.display.update()
         time.sleep(1)
         self.screen.fill(self.white)
-        pg.draw.line(self.screen, self.black, (self.width / 3, 0),
-                     (self.width / 3, self.height), 7)
-        pg.draw.line(self.screen, self.black, (self.width / 3 * 2, 0),
-                     (self.width / 3 * 2, self.height), 7)
-        pg.draw.line(self.screen, self.black, (0, self.height / 3),
-                     (self.width, self.height / 3), 7)
-        pg.draw.line(self.screen, self.black, (0, self.height / 3 * 2),
-                     (self.width, self.height / 3 * 2), 7)
+        pygame.draw.line(
+            self.screen,
+            self.black,
+            (self.width / 3, 0),
+            (self.width / 3, self.height),
+            7,
+        )
+        pygame.draw.line(
+            self.screen,
+            self.black,
+            (self.width / 3 * 2, 0),
+            (self.width / 3 * 2, self.height),
+            7,
+        )
+        pygame.draw.line(
+            self.screen,
+            self.black,
+            (0, self.height / 3),
+            (self.width, self.height / 3),
+            7,
+        )
+        pygame.draw.line(
+            self.screen,
+            self.black,
+            (0, self.height / 3 * 2),
+            (self.width, self.height / 3 * 2),
+            7,
+        )
 
     def drawStatus(self):
         AI_Game = TicTacToe(self.board)
@@ -80,12 +98,12 @@ class Game:
                 color = self.blue
                 reset = True
 
-        font = pg.font.Font(None, 30)
+        font = pygame.font.Font(None, 30)
         text = font.render(message, 1, color)
         self.screen.fill((0, 0, 0), (0, 400, 500, 100))
-        text_rect = text.get_rect(center=(self.width / 2, 500-50))
+        text_rect = text.get_rect(center=(self.width / 2, 500 - 50))
         self.screen.blit(text, text_rect)
-        pg.display.update()
+        pygame.display.update()
         if reset:
             self.resetGame()
 
@@ -103,7 +121,7 @@ class Game:
             self.turn = self.AI_TEXT
 
         self.drawStatus()
-        pg.display.update()
+        pygame.display.update()
 
     def playAI(self):
         AI_Game = TicTacToe(self.board)
@@ -112,22 +130,22 @@ class Game:
             self.drawXO(row, col, self.AI_TEXT)
 
     def playUser(self):
-        x, y = pg.mouse.get_pos()
+        x, y = pygame.mouse.get_pos()
 
-        if (x < self.width / 3):
+        if x < self.width / 3:
             col = 0
-        elif (x < self.width / 3 * 2):
+        elif x < self.width / 3 * 2:
             col = 1
-        elif (x < self.width):
+        elif x < self.width:
             col = 2
         else:
             col = None
 
-        if (y < self.height / 3):
+        if y < self.height / 3:
             row = 0
-        elif (y < self.height / 3 * 2):
+        elif y < self.height / 3 * 2:
             row = 1
-        elif (y < self.height):
+        elif y < self.height:
             row = 2
         else:
             row = None
@@ -140,23 +158,23 @@ class Game:
         time.sleep(3)
         self.turn = self.HUMAN_TEXT
         self.gameInitiatingWindow()
-        self.board = np.zeros((3, 3)).astype('int')
+        self.board = np.zeros((3, 3)).astype("int")
         self.drawStatus()
 
     def play(self):
-        while (True):
-            for event in pg.event.get():
-                if event.type == QUIT:
-                    pg.quit()
+        while True:
+            for event in pygame.event.get():
+                if event.type == locals.QUIT:
+                    pygame.quit()
                     sys.exit()
-                elif event.type == MOUSEBUTTONDOWN:
+                elif event.type == locals.MOUSEBUTTONDOWN:
                     if self.turn == self.HUMAN_TEXT:
                         self.playUser()
 
             if self.turn == self.AI_TEXT:
                 self.playAI()
 
-            pg.display.update()
+            pygame.display.update()
             self.CLOCK.tick(self.fps)
 
 
